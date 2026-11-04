@@ -61,7 +61,7 @@ let base = [30, 10, 20, 50, 40];
 //console.log("8a. sort (Mutant) -> retorn:", base.sort() , "| Original modificat:", base);
 
 // // 8b. Immutable: Ordena una còpia de major a menor amb .toSorted() sense alterar 'base'
-console.log("8b. toSorted (Immutable) -> retorn:", base.toSorted().toReversed, "| Original intacte:", base);
+console.log("8b. toSorted (Immutable) -> retorn:", base.toSorted().toReversed(), "| Original intacte:", base);
 
 // // --- B. Invertir ---
 // // 9a. Mutant: Inverteix 'base' amb .reverse() (modifica l'original)
@@ -164,13 +164,13 @@ let conjunt = new Set([1, 2, 3]);
 let mapa = new Map([["usr_1", "Joan"], ["usr_2", "Marta"]]);
 
 // // 25. Set: Afegeix el valor 4 a 'conjunt' i comprova si existeix en la mateixa comanda (.add(4).has(4))
-console.log("25. Set (add + has):", conjunt.add(4).has(2));
+console.log("25. Set (add + has):", conjunt.add(4).has(4));
 
 // // 26. Map: Afegeix la clau "usr_3" amb valor "Albert" i obtén el valor de "usr_3" en la mateixa comanda (.set(...).get(...))
 console.log("26. Map (set + get):", mapa.set("usr_3", "Albert").get("usr_3"));
 
 // // 27. Map: Converteix totes les claus de 'mapa' a un Array utilitzant Array.from()
- console.log("27. Map (Array de claus):",Array.from(mapa));
+ console.log("27. Map (Array de claus):",Array.from(mapa.keys()));
 
 // // 28. Map: Itera en una sola línia amb .forEach i mostra per consola `Clau: ${k} -> Valor: ${v}`
 mapa.forEach((v, k) => console.log(`Clau: ${k} -> Valor: ${v}`));
@@ -194,82 +194,99 @@ mapa.forEach((v, k) => console.log(`Clau: ${k} -> Valor: ${v}`));
  console.log("29a. Abans d'afegir element -> HTMLCollection (Viva):", colViva.length, "| NodeList (Estàtica):", colEstatica.length);
 
 // // Inserim dinàmicament un nou element 'span' amb classe 'item' a 'contenidor'
-// let nouItem = document.createElement("span");
-// nouItem.className = "item";
-// nouItem.textContent = "C";
-// contenidor.appendChild(nouItem);
+ let nouItem = document.createElement("span");
+ nouItem.className = "item";
+ nouItem.textContent = "C";
+ contenidor.appendChild(nouItem);
 
 // // 29b. Comprova les longituds (.length) de colViva i colEstatica després d'afegir l'element al DOM
-// console.log("29b. Després d'afegir element -> HTMLCollection (Viva):", /* LONGITUD COLVIVA */, "| NodeList (Estàtica):", /* LONGITUD COLESTATICA */);
+console.log("29b. Després d'afegir element -> HTMLCollection (Viva):", colViva.length, "| NodeList (Estàtica):", colEstatica.length);
 
 // // 30. Converteix la llista viva 'colViva' a un Array real amb Array.from() i extreu el textContent de cada element amb .map()
-// console.log("30. Array real des de HTMLCollection ->", /* ESCRIU LA COMANDA D'UNA LÍNIA AQUÍ */);
+ console.log("30. Array real des de HTMLCollection ->", Array.from(colViva).map(i=>i.textContent));
 
 
 // // ==========================================
 // // BLOC 8: PER QUÈ FALLEN AQUESTES COMANDES? (ERRORS HABITUALS)
 // // ==========================================
-// console.log("\n--- BLOC 8: Per què fallen aquestes comandes? ---");
+ console.log("\n--- BLOC 8: Per què fallen aquestes comandes? ---");
 
 // // Error 1: Comparar arrays amb ===
-// console.log("Error 1:", [1, 2] === [1, 2]); 
-// // PER QUÈ RETORNA FALSE? 
+// console.log("Error 1:", [1, 2] === [1, 2]);
+// // PER QUÈ RETORNA FALSE?
+//Los arrays son objetos y se comparan por referencia
+
 
 // // Error 2: Utilitzar typeof per detectar si és un Array
 // console.log("Error 2:", typeof [1, 2]); 
 // // PER QUÈ RETORNA "object"? 
+//En JavaScript, los arrays son un tipo de objeto
 
 // // Error 3: Intentar usar mètodes d'Array (.map) directament sobre una HTMLCollection
-// try {
-//   contenidor.getElementsByClassName("item").map(el => el.textContent);
-// } catch (e) {
-//   console.log("Error 3:", e.message);
-// }
-// // PER QUÈ FALLA? 
+try {
+  contenidor.getElementsByClassName("item").map(el => el.textContent);
+} catch (e) {
+  console.log("Error 3:", e.message);
+}
+// console.log(Array.from(
+//   contenidor.getElementsByClassName("item")
+// ).map(el => el.textContent))
+// // PER QUÈ FALLA?
+//Primero hay que convertirla en un array con Array.from()
 
 // // Error 4: Utilitzar delete en un array per eliminar un element
-// let llistaDelete = [10, 20, 30];
-// delete llistaDelete[1];
-// console.log("Error 4:", llistaDelete, "| Length:", llistaDelete.length);
-// // PER QUÈ NO FA EL QUE S'ESPERA? 
+ let llistaDelete = [10, 20, 30];
+ delete llistaDelete[1];
+ console.log("Error 4:", llistaDelete, "| Length:", llistaDelete.length);
+// // PER QUÈ NO FA EL QUE S'ESPERA?
+//delete elimina el valor, pero no elimina la posición del array
 
 // // Error 5: Retorn d'objecte literal en funció fletxa de map sense parèntesis
-// console.log("Error 5:", [1, 2].map(n => { val: n }));
-// // PER QUÈ RETORNA [undefined, undefined]? 
+ console.log("Error 5:", [1, 2].map(n => ({ val: n })));
+// // PER QUÈ RETORNA [undefined, undefined]?
+//Las llaves se interpretan como el cuerpo de la función y no como un objeto. La función no devuelve ningún valor.
 
 // // Error 6: Executar .sort() en números sense funció de comparació
-// console.log("Error 6:", [5, 13, 1, 22, 4].sort());
-// // PER QUÈ RETORNA [1, 13, 22, 4, 5]? 
+ console.log("Error 6:", [5, 13, 1, 22, 4].sort());
+// // PER QUÈ RETORNA [1, 13, 22, 4, 5]?
+//sort() sin una función de comparación ordena los elementos alfabéticamente como texto, no numéricamente
 
 // // Error 7: Intentar fer 'for...of' sobre un Objecte literal
-// try {
-//   for (let x of { a: 1, b: 2 }) {}
-// } catch (e) {
-//   console.log("Error 7:", e.message);
-// }
-// // PER QUÈ FALLA? 
+try {
+  for (let x of { a: 1, b: 2 }) {}
+} catch (e) {
+  console.log("Error 7:", e.message);
+}
+// // PER QUÈ FALLA?
+//Un objeto literal no es iterable con for...of porque no tiene un iterador
 
 // // Error 8: Passar un valor inicial incorrecte o no passar-ne cap a 'reduce' amb arrays d'objectes
-// console.log("Error 8:", productes.reduce((acc, p) => acc + p.preu));
+ console.log("Error 8:", productes.reduce((acc, p) => acc + p.preu));
 // // PER QUÈ RETORNA "[object Object]18453280"? 
+//Sin un valor inicial, reduce() utiliza el primer objeto como acumulador
 
 // // Error 9: Confondre .push() guardant la variable resultat
-// let llistaPush = [1, 2, 3];
-// llistaPush = llistaPush.push(4);
-// console.log("Error 9:", llistaPush);
-// // PER QUÈ SOBREESCRIU A 4? 
+ let llistaPush = [1, 2, 3];
+ llistaPush = llistaPush.push(4);
+ console.log("Error 9:", llistaPush);
+// // PER QUÈ SOBREESCRIU A 4?
+//push() devuelve la nueva longitud del array, no el array modificado
 
 // // Error 10: Intentar usar .includes() sobre un array d'objectes cercant per contingut
-// console.log("Error 10:", productes.includes({ id: 1, nom: "Portàtil Pro", categoria: "Electrònica", preu: 950, stock: 4, valoracions: [5, 4, 5] }));
-// // PER QUÈ RETORNA FALSE? 
+ console.log("Error 10:", productes.includes({ id: 1, nom: "Portàtil Pro", categoria: "Electrònica", preu: 950, stock: 4, valoracions: [5, 4, 5] }));
+// // PER QUÈ RETORNA FALSE?
+// includes() compara los objetos por referencia.
 
 // // Error 11: Intentar accés per índex negatiu directe amb claudàtors
-// console.log("Error 11:", preus[-1]);
-// // PER QUÈ RETORNA UNDEFINED? 
+ console.log("Error 11:", preus[-1]);
+// // PER QUÈ RETORNA UNDEFINED?
+// Los índices negativos no funcionan con los corchetes
+
 
 // // Error 12: Usar forEach intentant interrompre el bucle amb 'break' o 'return'
-// [1, 2, 3, 4].forEach(n => {
-//   if (n === 2) return; // Intentem fer un "continue" o sortir
-//   console.log("Error 12 - forEach element:", n);
-// });
-// // PER QUÈ NO FA ALLÒ ESPERAT? 
+ [1, 2, 3, 4].forEach(n => {
+     if (n === 2) return; // Intentem fer un "continue" o sortir
+   console.log("Error 12 - forEach element:", n);
+ });
+// // PER QUÈ NO FA ALLÒ ESPERAT?
+// return termina la ejecución de la función actual, pero no detiene todo el forEach()
